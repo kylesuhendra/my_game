@@ -3,8 +3,8 @@ FPS = 30
 
 TILESIZE = 32
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1024
+HEIGHT = 768
 
 # colors
 RED = (255,0,0)
