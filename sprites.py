@@ -39,7 +39,7 @@ class Player(Sprite):
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
             if hits:
                 if self.vx > 0:
-                    self.x = hits[0].rect.left
+                    self.x = hits[0].rect.left - self.rect.width
                 if self.vx < 0:
                     self.x = hits[0].rect.right
                 self.vx = 0
@@ -53,7 +53,16 @@ class Player(Sprite):
                     self.y = hits[0].rect.bottom
                 self.vy = 0
                 self.rect.y = self.y
-                
+    # makes powerup dissapear if touched by player
+    def collide_with_stuff(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        #player speed increase if collided with powerup
+        if hits:
+            if str(hits[0].__class__.__name__) == "Powerup":
+                self.speed = 100
+                print("I've gotten a powerup")
+
+              
     def update(self):
         self.get_keys()
         self.x += self.vx * self.game.dt
@@ -67,6 +76,7 @@ class Player(Sprite):
 
         self.rect.y = self.y
         self.collide_with_walls('y')
+        self.collide_with_stuff(self.game.all_powerups, True)
        
         
 
@@ -80,8 +90,8 @@ class Mob(Sprite):
         self.image = pg.Surface((32, 32))
         self.image.fill(GREEN)
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
         self.speed = 25
 
     def update(self):
@@ -103,10 +113,20 @@ class Wall(Sprite):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
 
 
+class Powerup(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_powerups
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(PINK)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
             
   
 

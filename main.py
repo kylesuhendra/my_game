@@ -12,7 +12,7 @@ class Game:
   # initializes all the things we need to run the game...includes the game clock which can set the FPS
   def __init__(self):
     pg.init()
-    # sound mixer...
+    # sound mixer
     pg.mixer.init()
     self.clock = pg.time.Clock()
     self.screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -21,13 +21,17 @@ class Game:
   def load_data(self):
     self.game_folder = path.dirname(__file__)
     self.map = Map(path.join(self.game_folder, 'level1.txt'))
+
   # this is where the game creates the stuff you see and hear
   def new(self):
     self.load_data()
+    print(self.map.data)
     # create the all sprites group to allow for batch updates and draw methods
     self.all_sprites = pg.sprite.Group()
     self.all_walls = pg.sprite.Group()
-    # instantiating the class to create the player object 
+    self.all_powerups = pg.sprite.Group()
+    # instantiating the class to create the player object
+     
     #self.player = Player(self, 5, 5)
     #self.mob = Mob(self, 100, 100)
     #self.wall = Wall(self, WIDTH//2, HEIGHT//2)
@@ -35,17 +39,21 @@ class Game:
     #for i in range(12):
     #Wall(self, TILESIZE*i, HEIGHT/2)
     #Mob(self, TILESIZE*i, TILESIZE*i)
+
+    # code to create sprites from level1
     for row, tiles in enumerate(self.map.data):
       print(row)
       for col, tile in enumerate(tiles):
         print(col)
         if tile == "1":
-          Wall(self, col*TILESIZE, row*TILESIZE)
+          Wall(self, col, row)
         if tile == "M":
-          Mob(self, col*TILESIZE, row*TILESIZE)
+          Mob(self, col, row)
+        if tile == "U":
+          Powerup(self, col, row)
         if tile == "P":
-          self.player = Player(self, col*TILESIZE, row*TILESIZE)
-
+          self.player = Player(self, col, row)
+        
 # methods are like functions that are part of a class
 # the run method runs the game loop
   def run(self):
@@ -64,16 +72,31 @@ class Game:
     for event in pg.event.get():
         if event.type == pg.QUIT:
           self.playing = False
+
   # process
   # this is where the game updates the game state
   def update(self):
     # update all the sprites
     self.all_sprites.update()
 
+  # Where we define text
+  def draw_text(self, surface, text, size, color, x, y):
+    font_name = pg.font.match_font('arial')
+    font = pg.font.Font(font_name, size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surface.blit(text_surface, text_rect)
+
   # output
+  #Drawing text 
   def draw(self):
-    self.screen.fill((0, 0, 0))
+    self.screen.fill(BLACK)
     self.all_sprites.draw(self.screen)
+    #Drawing "hi"
+    self.draw_text(self.screen, "hi", 24, WHITE, WIDTH/2, HEIGHT/2)
+    #Drawing FPS
+    self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
     pg.display.flip()
 
 if __name__ == "__main__":
