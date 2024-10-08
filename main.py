@@ -7,6 +7,14 @@ from sprites import *
 from tilemap import *
 from os import path
 
+'''
+GOALS:
+RULES:
+FEEDBACK:
+FREEDOM:
+'''
+
+
 # create a game class that carries all the properties of the game and methods
 class Game:
   # initializes all the things we need to run the game...includes the game clock which can set the FPS
@@ -30,6 +38,7 @@ class Game:
     self.all_sprites = pg.sprite.Group()
     self.all_walls = pg.sprite.Group()
     self.all_powerups = pg.sprite.Group()
+    self.all_coins = pg.sprite.Group()
     # instantiating the class to create the player object
      
     #self.player = Player(self, 5, 5)
@@ -51,6 +60,8 @@ class Game:
           Mob(self, col, row)
         if tile == "U":
           Powerup(self, col, row)
+        if tile == "C":
+          Coin(self, col, row)
         if tile == "P":
           self.player = Player(self, col, row)
         
@@ -95,6 +106,7 @@ class Game:
     self.all_sprites.draw(self.screen)
     #Drawing "hi"
     self.draw_text(self.screen, "hi", 24, WHITE, WIDTH/2, HEIGHT/2)
+    self.draw_text(self.screen, str(self.player.coin_count), 24, WHITE, 1000, 30)
     #Drawing FPS
     self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
     pg.display.flip()

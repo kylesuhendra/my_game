@@ -22,6 +22,7 @@ class Player(Sprite):
         self.y = y * TILESIZE
         self.speed = 20
         self.vx, self.vy = 0, 0
+        self.coin_count = 0
     #velocity and control code
     def get_keys(self):
         keys = pg.key.get_pressed()
@@ -53,15 +54,25 @@ class Player(Sprite):
                     self.y = hits[0].rect.bottom
                 self.vy = 0
                 self.rect.y = self.y
+    
     # makes powerup dissapear if touched by player
     def collide_with_stuff(self, group, kill):
-        hits = pg.sprite.spritecollide(self, group, kill)
+        hits = pg.sprite.spritecollide(self, group, kill)      
         #player speed increase if collided with powerup
         if hits:
             if str(hits[0].__class__.__name__) == "Powerup":
-                self.speed = 100
-                print("I've gotten a powerup")
+                self.speed = 10
+                print("I've gotten a powerup") 
+            if str(hits[0].__class__.__name__) == "Coin":               
+                print("I've gotten a Coin")
+                self.coin_count += 1
 
+                
+
+                
+
+
+                
               
     def update(self):
         self.get_keys()
@@ -77,6 +88,7 @@ class Player(Sprite):
         self.rect.y = self.y
         self.collide_with_walls('y')
         self.collide_with_stuff(self.game.all_powerups, True)
+        self.collide_with_stuff(self.game.all_coins, True)
        
         
 
@@ -124,6 +136,17 @@ class Powerup(Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(PINK)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class Coin(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_coins
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
