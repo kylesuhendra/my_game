@@ -3,15 +3,16 @@
 #Importing the code needed to create game from other files
 import pygame as pg
 from settings import *
-from sprites import *
+#from sprites import *
+from sprites_side_scroller import *
 from tilemap import *
 from os import path
 
 '''
-GOALS:
-RULES:
-FEEDBACK:
-FREEDOM:
+GOALS: collect all dots in the maze
+RULES: don't hit the goasts
+FEEDBACK: number of dots eaten and what level you're on
+FREEDOM: can move around and turn
 '''
 
 
