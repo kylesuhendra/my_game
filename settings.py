@@ -1,7 +1,7 @@
 #This file was created by: Kyle Suhendra
 FPS = 30
 
-TILESIZE = 32
+TILESIZE = 16
 
 WIDTH = 1024
 HEIGHT = 768

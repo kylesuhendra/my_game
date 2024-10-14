@@ -61,7 +61,7 @@ class Player(Sprite):
         #player speed increase if collided with powerup
         if hits:
             if str(hits[0].__class__.__name__) == "Powerup":
-                self.speed = 100
+                self.speed = 5
                 print("I've gotten a powerup") 
             if str(hits[0].__class__.__name__) == "Coin":               
                 print("I've gotten a Coin")

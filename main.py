@@ -29,7 +29,7 @@ class Game:
     self.playing = True
   def load_data(self):
     self.game_folder = path.dirname(__file__)
-    self.map = Map(path.join(self.game_folder, 'level1.txt'))
+    self.map = Map(path.join(self.game_folder, 'track1.txt'))
 
   # this is where the game creates the stuff you see and hear
   def new(self):
@@ -55,7 +55,7 @@ class Game:
       print(row)
       for col, tile in enumerate(tiles):
         print(col)
-        if tile == "1":
+        if tile == "W":
           Wall(self, col, row)
         if tile == "M":
           Mob(self, col, row)
@@ -107,7 +107,8 @@ class Game:
     self.all_sprites.draw(self.screen)
     #Drawing "hi"
     self.draw_text(self.screen, "hi", 24, WHITE, WIDTH/2, HEIGHT/2)
-    self.draw_text(self.screen, str(self.player.coin_count), 24, WHITE, 1000, 30)
+    #self.draw_text(self.screen, str(self.player.coin_count), 24, WHITE, 1000, 30)
+    self.draw_text(self.screen, str(self.player.speed), 24, WHITE, 1000, 30)
     #Drawing FPS
     self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
     pg.display.flip()
