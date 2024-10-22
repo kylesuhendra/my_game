@@ -1,4 +1,4 @@
-# This file was created by: Chris Cozort
+#This file was created by: Kyle Suhendra
 
 import pygame as pg
 from pygame.sprite import Sprite
@@ -17,7 +17,7 @@ class Player(Sprite):
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((32, 32))
+        self.image = pg.Surface((16, 16))
         self.image.fill((255, 0, 0))
         self.rect = self.image.get_rect()
         # self.rect.x = x
@@ -27,29 +27,32 @@ class Player(Sprite):
         self.pos = vec(x*TILESIZE, y*TILESIZE)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
-        self.speed = 5
+        self.speed = 1
+        self.max_speed = 10
         # self.vx, self.vy = 0, 0
         self.coin_count = 0
-        self.jump_power = 20
-        self.jumping = False
+        #self.jump_power = 20
+        #self.jumping = False
+        
     def get_keys(self):
         keys = pg.key.get_pressed()
-        # if keys[pg.K_w]:
-        #     self.vy -= self.speed
+        self.acc = vec(0, 0)
+        if keys[pg.K_w]:
+             self.vel.y -= self.speed
         if keys[pg.K_a]:
             self.vel.x -= self.speed
-        # if keys[pg.K_s]:
-        #     self.vy += self.speed
+        if keys[pg.K_s]:
+             self.vel.y += self.speed
         if keys[pg.K_d]:
             self.vel.x += self.speed
         if keys[pg.K_SPACE]:
             self.jump()
+
     def jump(self):
         print("im trying to jump")
         print(self.vel.y)
         self.rect.y += 2
         hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
-        self.rect.y -= 2
         if hits and not self.jumping:
             self.jumping = True
             self.vel.y = -self.jump_power
@@ -79,28 +82,32 @@ class Player(Sprite):
                 self.vel.y = 0
                 self.rect.y = self.pos.y
                 self.jumping = False
-                # print("Collided on x axis")
-        #     else:
-        #         print("not working...for hits")
-        # # else:
-        #     print("not working for dir check")
+        
     def collide_with_stuff(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Powerup":
-                self.speed += 20
+                self.speed += 0.5
                 print("I've gotten a powerup!")
             if str(hits[0].__class__.__name__) == "Coin":
                 print("I got a coin!!!")
                 self.coin_count += 1
-
+    
     def update(self):
-        self.acc = vec(0, GRAVITY)
+        #self.acc = vec(0, GRAVITY)
         self.get_keys()
         # self.x += self.vx * self.game.dt
         # self.y += self.vy * self.game.dt
+
+        #applies friction
         self.acc.x += self.vel.x * FRICTION
+        self.acc.y += self.vel.y * FRICTION
         self.vel += self.acc
+
+        #sets max speed for car
+        if self.vel.length() > self.max_speed:
+            self.vel.scale_to_length(self.max_speed)
+
 
         if abs(self.vel.x) < 0.1:
             self.vel.x = 0
@@ -170,13 +177,7 @@ class Coin(Sprite):
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GOLD)
+        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-
-
-            
-  
-
-

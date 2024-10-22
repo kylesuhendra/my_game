@@ -4,8 +4,10 @@
 import pygame as pg
 from settings import *
 #from sprites import *
-from sprites_side_scroller import *
+#from sprites_side_scroller import *
+from sprites_race_thing import *
 from tilemap import *
+from utils import *
 from os import path
 
 '''
@@ -40,6 +42,9 @@ class Game:
     self.all_walls = pg.sprite.Group()
     self.all_powerups = pg.sprite.Group()
     self.all_coins = pg.sprite.Group()
+
+    self.game_timer = Timer(self)
+    self.game_timer.cd = 45
     # instantiating the class to create the player object
      
     #self.player = Player(self, 5, 5)
@@ -88,8 +93,10 @@ class Game:
   # process
   # this is where the game updates the game state
   def update(self):
+    if self.game_timer.cd < 1:
+
     # update all the sprites
-    self.all_sprites.update()
+     self.all_sprites.update()
 
   # Where we define text
   def draw_text(self, surface, text, size, color, x, y):
@@ -106,11 +113,12 @@ class Game:
     self.screen.fill(BLACK)
     self.all_sprites.draw(self.screen)
     #Drawing "hi"
-    self.draw_text(self.screen, "hi", 24, WHITE, WIDTH/2, HEIGHT/2)
+    #self.draw_text(self.screen, "hi", 24, WHITE, WIDTH/2, HEIGHT/2)
     #self.draw_text(self.screen, str(self.player.coin_count), 24, WHITE, 1000, 30)
     self.draw_text(self.screen, str(self.player.speed), 24, WHITE, 1000, 30)
     #Drawing FPS
-    self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
+    #self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
+    self.draw_text(self.screen, str(self.game_timer.get_countdown()), 24, WHITE, WIDTH/30, HEIGHT/30)
     pg.display.flip()
 
 if __name__ == "__main__":
