@@ -5,6 +5,7 @@ from pygame.sprite import Sprite
 from settings import *
 from random import randint
 
+
 vec = pg.math.Vector2
 
 
@@ -20,33 +21,32 @@ class Player(Sprite):
         self.image = pg.Surface((16, 16))
         self.image.fill((255, 0, 0))
         self.rect = self.image.get_rect()
-        # self.rect.x = x
-        # self.rect.y = y
-        # self.x = x * TILESIZE
-        # self.y = y * TILESIZE
-        self.pos = vec(x*TILESIZE, y*TILESIZE)
+        self.rect.x = x*TILESIZE
+        self.rect.y = y*TILESIZE
+        self.pos = vec(self.rect.x, self.rect.y)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.speed = 1
         self.max_speed = 10
         # self.vx, self.vy = 0, 0
         self.coin_count = 0
+        self.finish_count = 0
+        self.finished = False
         #self.jump_power = 20
         #self.jumping = False
         
     def get_keys(self):
         keys = pg.key.get_pressed()
-        self.acc = vec(0, 0)
         if keys[pg.K_w]:
-             self.vel.y -= self.speed
+            self.vel.y -= self.speed
         if keys[pg.K_a]:
             self.vel.x -= self.speed
         if keys[pg.K_s]:
-             self.vel.y += self.speed
+            self.vel.y += self.speed
         if keys[pg.K_d]:
             self.vel.x += self.speed
-        if keys[pg.K_SPACE]:
-            self.jump()
+        #if keys[pg.K_SPACE]:
+            #self.jump()
 
     def jump(self):
         print("im trying to jump")
@@ -87,32 +87,46 @@ class Player(Sprite):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if str(hits[0].__class__.__name__) == "Powerup":
-                self.speed += 0.5
+                keys = pg.key.get_pressed()
+                if keys[pg.K_a]:
+                    self.vel.x -= 20
+                if keys[pg.K_d]:
+                    self.vel.x += 20
+                if keys[pg.K_s]:
+                    self.vel.y += 20
+                if keys[pg.K_w]:
+                    self.vel.y -= 20
                 print("I've gotten a powerup!")
             if str(hits[0].__class__.__name__) == "Coin":
                 print("I got a coin!!!")
                 self.coin_count += 1
+            if str(hits[0].__class__.__name__) == "Finish":
+                print("I finished!!!")
+                self.finished = True
+                
+                
+                
     
     def update(self):
         #self.acc = vec(0, GRAVITY)
+        self.acc = vec (0,0)
         self.get_keys()
-        # self.x += self.vx * self.game.dt
+        
+        #self.x += self.vx * self.game.dt
         # self.y += self.vy * self.game.dt
-
         #applies friction
         self.acc.x += self.vel.x * FRICTION
         self.acc.y += self.vel.y * FRICTION
         self.vel += self.acc
 
-        #sets max speed for car
-        if self.vel.length() > self.max_speed:
-            self.vel.scale_to_length(self.max_speed)
-
-
         if abs(self.vel.x) < 0.1:
             self.vel.x = 0
 
         self.pos += self.vel + 0.5 * self.acc
+
+        #sets max speed for car
+        if self.vel.length() > self.max_speed:
+            self.vel.scale_to_length(self.max_speed)
 
         self.rect.x = self.pos.x
         self.collide_with_walls('x')
@@ -122,6 +136,7 @@ class Player(Sprite):
         # teleport the player to the other side of the screen
         self.collide_with_stuff(self.game.all_powerups, True)
         self.collide_with_stuff(self.game.all_coins, True)
+        self.collide_with_stuff(self.game.all_finishes, True)
 
 # added Mob - moving objects
 # it is a child class of Sprite
@@ -178,6 +193,17 @@ class Coin(Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class Finish(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_finishes
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(ORANGE)
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE

@@ -4,7 +4,7 @@
 import pygame as pg
 from settings import *
 #from sprites import *
-#from sprites_side_scroller import *
+from sprites_side_scroller import *
 from sprites_race_thing import *
 from tilemap import *
 from utils import *
@@ -31,7 +31,7 @@ class Game:
     self.playing = True
   def load_data(self):
     self.game_folder = path.dirname(__file__)
-    self.map = Map(path.join(self.game_folder, 'track1.txt'))
+    self.map = Map(path.join(self.game_folder, 'track1.2.txt'))
 
   # this is where the game creates the stuff you see and hear
   def new(self):
@@ -42,10 +42,14 @@ class Game:
     self.all_walls = pg.sprite.Group()
     self.all_powerups = pg.sprite.Group()
     self.all_coins = pg.sprite.Group()
+    self.all_finishes = pg.sprite.Group()
 
     self.game_timer = Timer(self)
-    self.game_timer.cd = 45
-    # instantiating the class to create the player object
+    # timer for Track 1
+    self.game_timer.cd = 40
+    # timer for track 1.2
+    self.game_timer.cd = 30
+      # instantiating the class to create the player object
      
     #self.player = Player(self, 5, 5)
     #self.mob = Mob(self, 100, 100)
@@ -70,6 +74,8 @@ class Game:
           Coin(self, col, row)
         if tile == "P":
           self.player = Player(self, col, row)
+        if tile == "F":
+           Finish(self, col, row)
         
 # methods are like functions that are part of a class
 # the run method runs the game loop
@@ -93,10 +99,14 @@ class Game:
   # process
   # this is where the game updates the game state
   def update(self):
-    if self.game_timer.cd < 1:
 
+    if not self.player.finished:
+      self.game_timer.ticking() 
     # update all the sprites
-     self.all_sprites.update()
+    self.all_sprites.update()
+    if self.game_timer.cd < 1:
+     for s in  self.all_sprites:
+        s.kill()
 
   # Where we define text
   def draw_text(self, surface, text, size, color, x, y):
@@ -119,6 +129,21 @@ class Game:
     #Drawing FPS
     #self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
     self.draw_text(self.screen, str(self.game_timer.get_countdown()), 24, WHITE, WIDTH/30, HEIGHT/30)
+
+    if self.player.finished:
+      self.draw_text(self.screen, "WELL DONE", 24, WHITE, WIDTH/2, HEIGHT/2)
+
+    if self.game_timer.cd < 1:
+      self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
+
+    
+
+   
+      
+      #self.draw_text(self.screen, "RACE WON", 24, WHITE, WIDTH/2, HEIGHT/2) 
+
+     
+                  
     pg.display.flip()
 
 if __name__ == "__main__":
