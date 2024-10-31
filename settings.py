@@ -17,4 +17,7 @@ PINK = (255,155,155)
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 YELLOW = (255,255,0)
-ORANGE = (35,100,0)
+NEON = (57,255,20)
+
+TRACK1 = 'track1.txt'
+TRACK2 = 'track1.2.txt'

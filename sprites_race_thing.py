@@ -28,10 +28,11 @@ class Player(Sprite):
         self.acc = vec(0,0)
         self.speed = 1
         self.max_speed = 10
-        # self.vx, self.vy = 0, 0
         self.coin_count = 0
         self.finish_count = 0
         self.finished = False
+        self.selector1 = False
+        self.selector1 = False
         #self.jump_power = 20
         #self.jumping = False
         
@@ -103,6 +104,11 @@ class Player(Sprite):
             if str(hits[0].__class__.__name__) == "Finish":
                 print("I finished!!!")
                 self.finished = True
+                self.finish_count += 1
+            if str(hits[0].__class__.__name__) == "Selector1":
+                self.selector1 = True
+            if str(hits[0].__class__.__name__) == "Selector2":
+                self.selector2 = True
                 
                 
                 
@@ -137,6 +143,7 @@ class Player(Sprite):
         self.collide_with_stuff(self.game.all_powerups, True)
         self.collide_with_stuff(self.game.all_coins, True)
         self.collide_with_stuff(self.game.all_finishes, True)
+        self.collide_with_stuff(self.game.all_selectors, True)
 
 # added Mob - moving objects
 # it is a child class of Sprite
@@ -203,7 +210,29 @@ class Finish(Sprite):
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(ORANGE)
+        self.image.fill(NEON)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class Selector1(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_selectors
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(NEON)
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class Selector2(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_selectors
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(NEON)
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
