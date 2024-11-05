@@ -90,13 +90,13 @@ class Player(Sprite):
             if str(hits[0].__class__.__name__) == "Powerup":
                 keys = pg.key.get_pressed()
                 if keys[pg.K_a]:
-                    self.vel.x -= 20
+                    self.vel.x -= 40
                 if keys[pg.K_d]:
-                    self.vel.x += 20
+                    self.vel.x += 40
                 if keys[pg.K_s]:
-                    self.vel.y += 20
+                    self.vel.y += 40
                 if keys[pg.K_w]:
-                    self.vel.y -= 20
+                    self.vel.y -= 40
                 print("I've gotten a powerup!")
             if str(hits[0].__class__.__name__) == "Coin":
                 print("I got a coin!!!")
@@ -105,12 +105,7 @@ class Player(Sprite):
                 print("I finished!!!")
                 self.finished = True
                 self.finish_count += 1
-            if str(hits[0].__class__.__name__) == "Selector1":
-                self.selector1 = True
-            if str(hits[0].__class__.__name__) == "Selector2":
-                self.selector2 = True
-                
-                
+            
                 
     
     def update(self):
@@ -134,16 +129,21 @@ class Player(Sprite):
         if self.vel.length() > self.max_speed:
             self.vel.scale_to_length(self.max_speed)
 
+        if self.vel.x > self.max_speed:
+            self.vel.x = self.max_speed
+
+        if self.vel.y > self.max_speed:
+            self.vel.y = self.max_speed
+
         self.rect.x = self.pos.x
         self.collide_with_walls('x')
 
         self.rect.y = self.pos.y
         self.collide_with_walls('y')
-        # teleport the player to the other side of the screen
+       
         self.collide_with_stuff(self.game.all_powerups, True)
         self.collide_with_stuff(self.game.all_coins, True)
         self.collide_with_stuff(self.game.all_finishes, True)
-        self.collide_with_stuff(self.game.all_selectors, True)
 
 # added Mob - moving objects
 # it is a child class of Sprite
@@ -207,28 +207,6 @@ class Coin(Sprite):
 class Finish(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.all_finishes
-        Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(NEON)
-        self.rect = self.image.get_rect()
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-
-class Selector1(Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.all_selectors
-        Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(NEON)
-        self.rect = self.image.get_rect()
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-
-class Selector2(Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.all_selectors
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))

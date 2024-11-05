@@ -1,5 +1,11 @@
 #this file was created by: Kyle Suhendra
 
+'''
+Sources are:
+Mr. Cozort - Countdown, Movement, Text
+https://github.com/Mosedo/Machine-Learning/blob/main/smart_dots.py - Max Speed
+'''
+
 #Importing the code needed to create game from other files
 import pygame as pg
 from settings import *
@@ -9,6 +15,7 @@ from sprites_race_thing import *
 from tilemap import *
 from utils import *
 from os import path
+
 
 '''
 GOALS: collect all dots in the maze
@@ -44,7 +51,7 @@ class Game:
     self.all_powerups = pg.sprite.Group()
     self.all_coins = pg.sprite.Group()
     self.all_finishes = pg.sprite.Group()
-    self.all_selectors = pg.sprite.Group()
+    
 
     self.game_timer = Timer(self)
     # timer for Track 1
@@ -69,10 +76,6 @@ class Game:
           self.player = Player(self, col, row)
         if tile == "F":
            Finish(self, col, row)
-        if tile == "1":
-           Selector1(self, col, row)
-        if tile == "2":
-           Selector2(self, col, row)
         
 # methods are like functions that are part of a class
 # the run method runs the game loop
@@ -107,10 +110,11 @@ class Game:
     # kills all sprites if countdown hits 0
     if self.game_timer.cd < 1:
      for s in  self.all_sprites:
-        s.kill()
+        s.kill()  
 
-      
-      
+  quit_img = pg.image.load("images/button_quit.png").convert_alpha()
+
+  quit_button = button.Button(336, 375, quit_img, 1)
 
   # Where we define text
   def draw_text(self, surface, text, size, color, x, y):
@@ -126,9 +130,6 @@ class Game:
   def draw(self):
     self.screen.fill(BLACK)
     self.all_sprites.draw(self.screen)
-
-    #Drawing "hi"
-    #self.draw_text(self.screen, "hi", 24, WHITE, WIDTH/2, HEIGHT/2)
 
     #self.draw_text(self.screen, str(self.player.coin_count), 24, WHITE, 1000, 30)
     self.draw_text(self.screen, str(self.player.speed), 24, WHITE, 1000, 30)
