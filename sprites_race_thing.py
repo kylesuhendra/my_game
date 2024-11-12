@@ -31,10 +31,6 @@ class Player(Sprite):
         self.coin_count = 0
         self.finish_count = 0
         self.finished = False
-        self.selector1 = False
-        self.selector1 = False
-        #self.jump_power = 20
-        #self.jumping = False
         
     def get_keys(self):
         keys = pg.key.get_pressed()
