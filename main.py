@@ -86,7 +86,7 @@ class Game:
             self.player_active = True
         elif self.track_selected == 3:
             self.map = Map(path.join(self.game_folder, TRACK3))
-            self.game_timer.cd = 29
+            self.game_timer.cd = 24
             self.track_open = True 
             self.player_active = True
             
