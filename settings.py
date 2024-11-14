@@ -20,4 +20,5 @@ YELLOW = (255,255,0)
 NEON = (57,255,20)
 
 TRACK1 = 'track1.txt'
-TRACK2 = 'track1.2.txt'
+TRACK2 = 'track2.txt'
+TRACK3 = 'track3.txt'

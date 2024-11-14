@@ -52,6 +52,7 @@ class Game:
             self.draw_text(self.screen, "Select Track", 32, WHITE, WIDTH / 2, HEIGHT / 4)
             self.draw_text(self.screen, "Press 1 for Track 1", 24, WHITE, WIDTH / 2, HEIGHT / 2)
             self.draw_text(self.screen, "Press 2 for Track 2", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
+            self.draw_text(self.screen, "Press 3 for Track 3", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
             pg.display.flip()
           
             for event in pg.event.get():
@@ -66,7 +67,10 @@ class Game:
                         menu_running = False
                     elif event.key == pg.K_2:
                         self.track_selected = 2
-                        menu_running = False#Loads track based on what is pressed
+                        menu_running = False #Loads track based on what is pressed
+                    elif event.key == pg.K_3:
+                        self.track_selected = 3
+                        menu_running = False 
 
   def load_data(self):
         self.game_folder = path.dirname(__file__)
@@ -77,6 +81,11 @@ class Game:
             self.player_active = True
         elif self.track_selected == 2:
             self.map = Map(path.join(self.game_folder, TRACK2))
+            self.game_timer.cd = 29
+            self.track_open = True 
+            self.player_active = True
+        elif self.track_selected == 3:
+            self.map = Map(path.join(self.game_folder, TRACK3))
             self.game_timer.cd = 29
             self.track_open = True 
             self.player_active = True
@@ -97,20 +106,21 @@ class Game:
       if self.track_open:
         for row, tiles in enumerate(self.map.data):
           print(row)
-        for col, tile in enumerate(tiles):
-          print(col)
-          if tile == "W":
-            Wall(self, col, row)
-          elif tile == "M":
-            Mob(self, col, row)
-          elif tile == "U":
-            Powerup(self, col, row)
-          elif tile == "C":
-            Coin(self, col, row)
-          elif tile == "P":
-            self.player = Player(self, col, row)
-          elif tile == "F":
-             Finish(self, col, row)
+          for col, tile in enumerate(tiles):
+            print(col)
+            if tile == "W":
+              Wall(self, col, row)
+            elif tile == "M":
+              Mob(self, col, row)
+            elif tile == "U":
+              Powerup(self, col, row)
+            elif tile == "C":
+              Coin(self, col, row)
+            elif tile == "P":
+              self.player = Player(self, col, row)
+            elif tile == "F":
+              Finish(self, col, row)
+
 
   
   
@@ -136,9 +146,9 @@ class Game:
   # process
   # this is where the game updates the game state
   def update(self):
-
-    # the timer counts down only if the player isn't finished
-    if self.player and hasattr(self.player, 'finished') and not self.player.finished:
+    player_moved = False
+    # the timer counts down only if the player isn't finished 
+    if self.player and hasattr(self.player, 'finished') and not self.player.finished: 
       self.game_timer.ticking()
 
     # update all the sprites
@@ -150,6 +160,7 @@ class Game:
       if self.game_timer.cd < 1:
         for s in  self.all_sprites:
           s.kill()  
+
 
   # Where we define text
   def draw_text(self, surface, text, size, color, x, y):
