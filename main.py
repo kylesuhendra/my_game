@@ -5,6 +5,7 @@ Sources are:
 Mr. Cozort - Countdown, Movement, Text
 https://github.com/Mosedo/Machine-Learning/blob/main/smart_dots.py - Max Speed
 https://www.youtube.com/watch?v=2iyx8_elcYg - Main Menu
+https://stackoverflow.com/questions/13984066/pygame-restart - Restart
 '''
 
 #Importing the code needed to create game from other files
@@ -50,6 +51,7 @@ class Game:
             self.screen.fill(BLACK)
             #Text on screen
             self.draw_text(self.screen, "Select Track", 32, WHITE, WIDTH / 2, HEIGHT / 4)
+            self.draw_text(self.screen, "Press R to reset", 24, WHITE, WIDTH / 2, HEIGHT / 4 + 40)
             self.draw_text(self.screen, "Press 1 for Track 1", 24, WHITE, WIDTH / 2, HEIGHT / 2)
             self.draw_text(self.screen, "Press 2 for Track 2", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
             self.draw_text(self.screen, "Press 3 for Track 3", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
@@ -71,6 +73,7 @@ class Game:
                     elif event.key == pg.K_3:
                         self.track_selected = 3
                         menu_running = False 
+                    
 
   def load_data(self):
         self.game_folder = path.dirname(__file__)
@@ -121,8 +124,9 @@ class Game:
             elif tile == "F":
               Finish(self, col, row)
 
-
-  
+  def reset_game(self):
+    self.load_data()  
+    self.new()  
   
 # methods are like functions that are part of a class
 # the run method runs the game loop
@@ -142,11 +146,14 @@ class Game:
     for event in pg.event.get():
         if event.type == pg.QUIT:
           self.playing = False
+        elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_r:
+                    self.reset_game()
 
   # process
   # this is where the game updates the game state
   def update(self):
-    player_moved = False
+    
     # the timer counts down only if the player isn't finished 
     if self.player and hasattr(self.player, 'finished') and not self.player.finished: 
       self.game_timer.ticking()
