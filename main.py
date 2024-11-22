@@ -12,7 +12,6 @@ ChatGPT input: Can you make a level the same size and similar to mine? (Track 3)
 #Importing the code needed to create game from other files
 import pygame as pg
 from settings import *
-from sprites_side_scroller import *
 from sprites_race_thing import *
 from tilemap import *
 from utils import *
@@ -52,7 +51,7 @@ class Game:
             self.screen.fill(BLACK)
             #Text on screen
             self.draw_text(self.screen, "Select Track", 32, WHITE, WIDTH / 2, HEIGHT / 4)
-            self.draw_text(self.screen, "Press R to reset", 24, WHITE, WIDTH / 2, HEIGHT / 4 + 40)
+            self.draw_text(self.screen, "Press 0 for TUTORIAL", 24, WHITE, WIDTH / 2, HEIGHT / 2 - 40)
             self.draw_text(self.screen, "Press 1 for Track 1", 24, WHITE, WIDTH / 2, HEIGHT / 2)
             self.draw_text(self.screen, "Press 2 for Track 2", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
             self.draw_text(self.screen, "Press 3 for Track 3", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
@@ -78,6 +77,9 @@ class Game:
                     elif event.key == pg.K_4:
                         self.track_selected = 4
                         menu_running = False 
+                    elif event.key == pg.K_0:
+                        self.track_selected = 100
+                        menu_running = False 
                     
 
   def load_data(self):
@@ -89,16 +91,21 @@ class Game:
             self.player_active = True
         elif self.track_selected == 2:
             self.map = Map(path.join(self.game_folder, TRACK2))
-            self.game_timer.cd = 29
+            self.game_timer.cd = 28
             self.track_open = True 
             self.player_active = True
         elif self.track_selected == 3:
             self.map = Map(path.join(self.game_folder, TRACK3))
-            self.game_timer.cd = 24
+            self.game_timer.cd = 23
             self.track_open = True 
             self.player_active = True
         elif self.track_selected == 4:
             self.map = Map(path.join(self.game_folder, TRACK4))
+            self.game_timer.cd = 21
+            self.track_open = True 
+            self.player_active = True
+        elif self.track_selected == 100:
+            self.map = Map(path.join(self.game_folder, TRACK0))
             self.game_timer.cd = 21
             self.track_open = True 
             self.player_active = True
@@ -216,6 +223,16 @@ class Game:
     if self.track_open:
       if self.game_timer.cd < 1:
         self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
+   
+    if self.track_open:
+      if self.track_selected == 100:
+        self.draw_text(self.screen, "Speed Boost--->", 24, WHITE, WIDTH/2 - 240, HEIGHT/2 - 70)
+        self.draw_text(self.screen, "Finish--->", 24, WHITE, WIDTH/2 - 95, HEIGHT/2 - 155)
+        self.draw_text(self.screen, "W, A, S, D to move", 24, WHITE, WIDTH/2 - 408, HEIGHT/2 - 25)
+        self.draw_text(self.screen, "Get to the finish", 24, WHITE, 200, 170)
+        self.draw_text(self.screen, "before the coundown reaches 0", 24, WHITE, 200, 200)
+        self.draw_text(self.screen, " and press R to reset", 24, WHITE, 200, 230)
+        self.draw_text(self.screen, "<---Countdown", 24, WHITE, 120, 25)
                
     pg.display.flip()
 
