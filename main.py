@@ -2,10 +2,11 @@
 
 '''
 Sources are:
-Mr. Cozort - Countdown, Movement, Text
+Mr. Cozort - Countdown, Movement, Text, Sprite Images
 https://github.com/Mosedo/Machine-Learning/blob/main/smart_dots.py - Max Speed
 https://www.youtube.com/watch?v=2iyx8_elcYg - Main Menu
 https://stackoverflow.com/questions/13984066/pygame-restart - Restart
+ChatGPT input: Can you make a level the same size and similar to mine? (Track 3) - Track 4
 '''
 
 #Importing the code needed to create game from other files
@@ -55,6 +56,7 @@ class Game:
             self.draw_text(self.screen, "Press 1 for Track 1", 24, WHITE, WIDTH / 2, HEIGHT / 2)
             self.draw_text(self.screen, "Press 2 for Track 2", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
             self.draw_text(self.screen, "Press 3 for Track 3", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
+            self.draw_text(self.screen, "Press 4 for Track 4", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 120)
             pg.display.flip()
           
             for event in pg.event.get():
@@ -73,6 +75,9 @@ class Game:
                     elif event.key == pg.K_3:
                         self.track_selected = 3
                         menu_running = False 
+                    elif event.key == pg.K_4:
+                        self.track_selected = 4
+                        menu_running = False 
                     
 
   def load_data(self):
@@ -90,6 +95,11 @@ class Game:
         elif self.track_selected == 3:
             self.map = Map(path.join(self.game_folder, TRACK3))
             self.game_timer.cd = 24
+            self.track_open = True 
+            self.player_active = True
+        elif self.track_selected == 4:
+            self.map = Map(path.join(self.game_folder, TRACK4))
+            self.game_timer.cd = 21
             self.track_open = True 
             self.player_active = True
             
@@ -149,6 +159,7 @@ class Game:
         elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_r:
                     self.reset_game()
+                
 
   # process
   # this is where the game updates the game state

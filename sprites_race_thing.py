@@ -4,11 +4,27 @@ import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
 from random import randint
+from os import path
 
+SPRITESHEET = 'carspritesheet.png'
 
+dir = path.dirname(__file__)
+img_dir = path.join(dir, "images")
+# sets up file with multiple images...
+class Spritesheet:
+    # utility class for loading and parsing spritesheets
+    def __init__(self, filename):
+        self.spritesheet = pg.image.load(filename).convert()
+
+    def get_image(self, x, y, width, height, scale):
+        # grab an image out of a larger spritesheet
+        image = pg.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        # image = pg.transform.scale(image, (width, height))
+        image = pg.transform.scale(image, (width*scale, height*scale))
+        return image
+    
 vec = pg.math.Vector2
-
-
 
 # create the player class with a superclass of Sprite
 class Player(Sprite):
@@ -18,8 +34,9 @@ class Player(Sprite):
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((16, 16))
-        self.image.fill((255, 0, 0))
+        self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
+        self.load_images()
+        self.image = self.standing_image
         self.rect = self.image.get_rect()
         self.rect.x = x*TILESIZE
         self.rect.y = y*TILESIZE
@@ -31,17 +48,29 @@ class Player(Sprite):
         self.coin_count = 0
         self.finish_count = 0
         self.finished = False
-        
+        self.direction = 1
+
+    def load_images(self):
+        self.image_up = self.spritesheet.get_image(0, 0, 16, 16, 1)     # Up image
+        self.image_right = self.spritesheet.get_image(32, 0, 16, 16, 1)  # Right image
+        self.image_down = self.spritesheet.get_image(48, 0, 16, 16, 1)   # Down image
+        self.image_left = self.spritesheet.get_image(16, 0, 16, 16, 1)   # Left image
+        self.standing_image = self.image_up 
+
     def get_keys(self):
         keys = pg.key.get_pressed()
         if keys[pg.K_w]:
             self.vel.y -= self.speed
+            self.image = self.image_up
         if keys[pg.K_a]:
             self.vel.x -= self.speed
+            self.image = self.image_left
         if keys[pg.K_s]:
             self.vel.y += self.speed
+            self.image = self.image_down
         if keys[pg.K_d]:
             self.vel.x += self.speed
+            self.image = self.image_right
         #if keys[pg.K_SPACE]:
             #self.jump()
 
