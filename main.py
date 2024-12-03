@@ -2,11 +2,11 @@
 
 '''
 Sources are:
-Mr. Cozort - Countdown, Movement, Text, Sprite Images
+Mr. Cozort - Countdown, Movement, Text, Sprite Images, Spritesheet
 https://github.com/Mosedo/Machine-Learning/blob/main/smart_dots.py - Max Speed
 https://www.youtube.com/watch?v=2iyx8_elcYg - Main Menu
 https://stackoverflow.com/questions/13984066/pygame-restart - Restart
-ChatGPT input: Can you make a level the same size and similar to mine? (Track 3) - Track 4
+ChatGPT input: Can you make a level the same size and similar to mine? (inputted Track 3 code) - Track 4
 '''
 
 #Importing the code needed to create game from other files
@@ -19,9 +19,9 @@ from os import path
 
 
 '''
-GOALS: collect all dots in the maze
-RULES: don't hit the goasts
-FEEDBACK: number of dots eaten and what level you're on
+GOALS: Get to the finish before the countdown hits 0
+RULES: Don't hit the debuffs
+FEEDBACK: Time left
 FREEDOM: can move around and turn
 '''
 
@@ -81,7 +81,7 @@ class Game:
                         self.track_selected = 100
                         menu_running = False 
                     
-
+  #Made the loading code an if loop
   def load_data(self):
         self.game_folder = path.dirname(__file__)
         if self.track_selected == 1:
@@ -122,7 +122,6 @@ class Game:
       self.all_finishes = pg.sprite.Group()
     
       # code to create sprites
-      
       if self.track_open:
         for row, tiles in enumerate(self.map.data):
           print(row)
@@ -140,7 +139,7 @@ class Game:
               self.player = Player(self, col, row)
             elif tile == "F":
               Finish(self, col, row)
-
+  #reloads everything to reset
   def reset_game(self):
     self.load_data()  
     self.new()  
@@ -164,8 +163,11 @@ class Game:
         if event.type == pg.QUIT:
           self.playing = False
         elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_r:
-                    self.reset_game()
+            if event.key == pg.K_r:
+              self.reset_game()
+            elif event.key == pg.K_e:
+              self.playing = False  # Exit the current game loop
+              self.main_menu()   
                 
 
   # process
@@ -223,7 +225,7 @@ class Game:
     if self.track_open:
       if self.game_timer.cd < 1:
         self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
-   
+    #code for text in the tutorial
     if self.track_open:
       if self.track_selected == 100:
         self.draw_text(self.screen, "Speed Boost--->", 24, WHITE, WIDTH/2 - 240, HEIGHT/2 - 70)
@@ -232,6 +234,7 @@ class Game:
         self.draw_text(self.screen, "Get to the finish", 24, WHITE, 200, 170)
         self.draw_text(self.screen, "before the coundown reaches 0", 24, WHITE, 200, 200)
         self.draw_text(self.screen, " and press R to reset", 24, WHITE, 200, 230)
+        self.draw_text(self.screen, "Press E to go back to Main Menu", 24, WHITE, 860, 720)
         self.draw_text(self.screen, "<---Countdown", 24, WHITE, 120, 25)
                
     pg.display.flip()

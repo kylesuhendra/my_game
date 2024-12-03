@@ -49,7 +49,8 @@ class Player(Sprite):
         self.finish_count = 0
         self.finished = False
         self.direction = 1
-
+    
+    #Code to define the right picture depending on which way the player is moving
     def load_images(self):
         self.image_up = self.spritesheet.get_image(0, 0, 16, 16, 1)     # Up image
         self.image_right = self.spritesheet.get_image(32, 0, 16, 16, 1)  # Right image
@@ -57,6 +58,7 @@ class Player(Sprite):
         self.image_left = self.spritesheet.get_image(16, 0, 16, 16, 1)   # Left image
         self.standing_image = self.image_up 
 
+    #Code to load the right picture depending on which letter is pressed
     def get_keys(self):
         keys = pg.key.get_pressed()
         if keys[pg.K_w]:
@@ -71,18 +73,6 @@ class Player(Sprite):
         if keys[pg.K_d]:
             self.vel.x += self.speed
             self.image = self.image_right
-        #if keys[pg.K_SPACE]:
-            #self.jump()
-
-    def jump(self):
-        print("im trying to jump")
-        print(self.vel.y)
-        self.rect.y += 2
-        hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
-        if hits and not self.jumping:
-            self.jumping = True
-            self.vel.y = -self.jump_power
-            print('still trying to jump...')
             
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -94,9 +84,6 @@ class Player(Sprite):
                     self.pos.x = hits[0].rect.right
                 self.vel.x = 0
                 self.rect.x = self.pos.x
-            #     print("Collided on x axis")
-            # else:
-            #     print("not working...for hits")
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
             if hits:
@@ -108,7 +95,8 @@ class Player(Sprite):
                 self.vel.y = 0
                 self.rect.y = self.pos.y
                 self.jumping = False
-        
+    
+    #Changes variables to effect other fetures besed on actions
     def collide_with_stuff(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
@@ -123,9 +111,6 @@ class Player(Sprite):
                 if keys[pg.K_w]:
                     self.vel.y -= 40
                 print("I've gotten a powerup!")
-            if str(hits[0].__class__.__name__) == "Coin":
-                print("I got a coin!!!")
-                self.coin_count += 1
             if str(hits[0].__class__.__name__) == "Finish":
                 print("I finished!!!")
                 self.finished = True
@@ -138,9 +123,7 @@ class Player(Sprite):
         self.acc = vec (0,0)
         self.get_keys()
         
-        #self.x += self.vx * self.game.dt
-        # self.y += self.vy * self.game.dt
-        #applies friction
+        #applies friction on the x and y axis
         self.acc.x += self.vel.x * FRICTION
         self.acc.y += self.vel.y * FRICTION
         self.vel += self.acc
