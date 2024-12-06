@@ -43,6 +43,10 @@ class Game:
     self.player = None
     self.track_open = False
     self.player_active = False
+    self.score = 0
+    self.current_time = 0 
+    
+    
 
   def main_menu(self):
         #creates menu first
@@ -57,6 +61,15 @@ class Game:
             self.draw_text(self.screen, "Press 3 for Track 3", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
             self.draw_text(self.screen, "Press 4 for Track 4", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 120)
             pg.display.flip()
+
+            self.game_folder = path.dirname(__file__)
+        
+            try:
+              with open(path.join(self.game_folder, HS_FILE), 'r') as f:
+                self.highscore = int(f.read())
+            except:
+              with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+                f.write(str(0))
           
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -84,26 +97,32 @@ class Game:
   #Made the loading code an if loop
   def load_data(self):
         self.game_folder = path.dirname(__file__)
+
+        #Level 1
         if self.track_selected == 1:
             self.map = Map(path.join(self.game_folder, TRACK1))
             self.game_timer.cd = 42 
             self.track_open = True 
             self.player_active = True
+        #level 2
         elif self.track_selected == 2:
             self.map = Map(path.join(self.game_folder, TRACK2))
             self.game_timer.cd = 28
             self.track_open = True 
             self.player_active = True
+        #level 3
         elif self.track_selected == 3:
             self.map = Map(path.join(self.game_folder, TRACK3))
             self.game_timer.cd = 23
             self.track_open = True 
             self.player_active = True
+        #level4
         elif self.track_selected == 4:
             self.map = Map(path.join(self.game_folder, TRACK4))
             self.game_timer.cd = 21
             self.track_open = True 
             self.player_active = True
+        #Tutorial
         elif self.track_selected == 100:
             self.map = Map(path.join(self.game_folder, TRACK0))
             self.game_timer.cd = 21
@@ -113,7 +132,7 @@ class Game:
    # this is where the game creates the stuff you see and hear
   def new(self): 
       self.load_data()
-      print(self.map.data)
+      # print(self.map.data)
       # create the all sprites group to allow for batch updates and draw methods
       self.all_sprites = pg.sprite.Group()
       self.all_walls = pg.sprite.Group()
@@ -124,9 +143,9 @@ class Game:
       # code to create sprites
       if self.track_open:
         for row, tiles in enumerate(self.map.data):
-          print(row)
+          # print(row)
           for col, tile in enumerate(tiles):
-            print(col)
+            # print(col)
             if tile == "W":
               Wall(self, col, row)
             elif tile == "M":
@@ -141,6 +160,8 @@ class Game:
               Finish(self, col, row)
   #reloads everything to reset
   def reset_game(self):
+    self.current_time = 0  
+    self.game_timer.current_time = 0
     self.load_data()  
     self.new()  
   
@@ -162,12 +183,16 @@ class Game:
     for event in pg.event.get():
         if event.type == pg.QUIT:
           self.playing = False
+          self.running = False
+          if self.score < self.highscore:
+            with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+              f.write(str(self.score))                   
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_r:
               self.reset_game()
             elif event.key == pg.K_e:
-              self.playing = False  # Exit the current game loop
-              self.main_menu()   
+             self.playing = False  # Exit the current game loop
+             self.main_menu()   
                 
 
   # process
@@ -177,6 +202,8 @@ class Game:
     # the timer counts down only if the player isn't finished 
     if self.player and hasattr(self.player, 'finished') and not self.player.finished: 
       self.game_timer.ticking()
+      self.current_time = self.game_timer.get_current_time() 
+
 
     # update all the sprites
     if self.track_open:
@@ -215,6 +242,7 @@ class Game:
     # draws countdown
     if self.track_open:
      self.draw_text(self.screen, str(self.game_timer.get_countdown()), 24, WHITE, WIDTH/30, HEIGHT/30)
+    
 
     # will say well done if player finishes
     if self.player:
@@ -225,6 +253,11 @@ class Game:
     if self.track_open:
       if self.game_timer.cd < 1:
         self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
+
+    if self.track_open:
+      self.draw_text(self.screen, "High Score: " + str(self.highscore), 24, WHITE, WIDTH/2, HEIGHT/12)
+      self.draw_text(self.screen, "Current Score: " + str(self.current_time), 24, WHITE, WIDTH/2, HEIGHT/24)
+
     #code for text in the tutorial
     if self.track_open:
       if self.track_selected == 100:
@@ -234,7 +267,7 @@ class Game:
         self.draw_text(self.screen, "Get to the finish", 24, WHITE, 200, 170)
         self.draw_text(self.screen, "before the coundown reaches 0", 24, WHITE, 200, 200)
         self.draw_text(self.screen, " and press R to reset", 24, WHITE, 200, 230)
-        self.draw_text(self.screen, "Press E to go back to Main Menu", 24, WHITE, 860, 720)
+        #self.draw_text(self.screen, "Press E to go back to Main Menu", 24, WHITE, 860, 720)
         self.draw_text(self.screen, "<---Countdown", 24, WHITE, 120, 25)
                
     pg.display.flip()
