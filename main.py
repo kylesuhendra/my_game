@@ -2,7 +2,7 @@
 
 '''
 Sources are:
-Mr. Cozort - Countdown, Movement, Text, Sprite Images, Spritesheet
+Mr. Cozort - Countdown, Movement, Text, Sprite Images, Spritesheet, Highscore
 https://github.com/Mosedo/Machine-Learning/blob/main/smart_dots.py - Max Speed
 https://www.youtube.com/watch?v=2iyx8_elcYg - Main Menu
 https://stackoverflow.com/questions/13984066/pygame-restart - Restart
@@ -63,13 +63,6 @@ class Game:
             pg.display.flip()
 
             self.game_folder = path.dirname(__file__)
-        
-            try:
-              with open(path.join(self.game_folder, HS_FILE), 'r') as f:
-                self.highscore = int(f.read())
-            except:
-              with open(path.join(self.game_folder, HS_FILE), 'w') as f:
-                f.write(str(0))
           
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -78,26 +71,40 @@ class Game:
                 #if number is clicked it will make the menu trun off and change self.track_selected to the right track
                 elif event.type == pg.KEYDOWN:
                     keys = pg.key.get_pressed()
+                    global HS_FILE
                     if event.key == pg.K_1:
                         self.track_selected = 1
                         menu_running = False
+                        HS_FILE = 'highscore1.txt'
                     elif event.key == pg.K_2:
                         self.track_selected = 2
-                        menu_running = False #Loads track based on what is pressed
+                        menu_running = False 
+                        HS_FILE = 'highscore2.txt'
                     elif event.key == pg.K_3:
                         self.track_selected = 3
                         menu_running = False 
+                        HS_FILE = 'highscore3.txt'
                     elif event.key == pg.K_4:
                         self.track_selected = 4
                         menu_running = False 
+                        HS_FILE = 'highscore4.txt'
                     elif event.key == pg.K_0:
                         self.track_selected = 100
                         menu_running = False 
-                    
+                        HS_FILE = 'highscoretutorial.txt'
+                        
+            if not menu_running:
+              try:
+                with open(path.join(self.game_folder, HS_FILE), 'r') as f:
+                 self.highscore = int(f.read())
+              except:
+                with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+                  f.write(str(100))        
+
   #Made the loading code an if loop
   def load_data(self):
         self.game_folder = path.dirname(__file__)
-
+        
         #Level 1
         if self.track_selected == 1:
             self.map = Map(path.join(self.game_folder, TRACK1))
@@ -159,8 +166,8 @@ class Game:
             elif tile == "F":
               Finish(self, col, row)
   #reloads everything to reset
-  def reset_game(self):
-    self.current_time = 0  
+  def reset_game(self): 
+    self.cu = 0
     self.game_timer.current_time = 0
     self.load_data()  
     self.new()  
@@ -183,10 +190,7 @@ class Game:
     for event in pg.event.get():
         if event.type == pg.QUIT:
           self.playing = False
-          self.running = False
-          if self.score < self.highscore:
-            with open(path.join(self.game_folder, HS_FILE), 'w') as f:
-              f.write(str(self.score))                   
+          self.running = False                 
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_r:
               self.reset_game()
@@ -200,7 +204,7 @@ class Game:
   def update(self):
     
     # the timer counts down only if the player isn't finished 
-    if self.player and hasattr(self.player, 'finished') and not self.player.finished: 
+    if self.player and not self.player.finished: 
       self.game_timer.ticking()
       self.current_time = self.game_timer.get_current_time() 
 
@@ -208,6 +212,11 @@ class Game:
     # update all the sprites
     if self.track_open:
       self.all_sprites.update()
+
+    if self.player.finished:
+       if self.current_time < self.highscore:
+            with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+              f.write(str(self.current_time))  
 
     # kills all sprites if countdown hits 0
     if self.track_open:
@@ -255,8 +264,8 @@ class Game:
         self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
 
     if self.track_open:
-      self.draw_text(self.screen, "High Score: " + str(self.highscore), 24, WHITE, WIDTH/2, HEIGHT/12)
-      self.draw_text(self.screen, "Current Score: " + str(self.current_time), 24, WHITE, WIDTH/2, HEIGHT/24)
+      self.draw_text(self.screen, "Best Time: " + str(self.highscore), 24, WHITE, 905, HEIGHT/12)
+      self.draw_text(self.screen, "Current Time: " + str(self.game_timer.get_countup()), 24, WHITE, 895, HEIGHT/24)
 
     #code for text in the tutorial
     if self.track_open:

@@ -26,4 +26,4 @@ TRACK3 = 'track3.txt'
 TRACK4 = 'track4.txt'
 TRACK0 = 'track0.txt'
 
-HS_FILE = 'highscore.txt'
+# HS_FILE = 'highscore.txt'
