@@ -139,7 +139,6 @@ class Game:
    # this is where the game creates the stuff you see and hear
   def new(self): 
       self.load_data()
-      # print(self.map.data)
       # create the all sprites group to allow for batch updates and draw methods
       self.all_sprites = pg.sprite.Group()
       self.all_walls = pg.sprite.Group()
@@ -165,12 +164,13 @@ class Game:
               self.player = Player(self, col, row)
             elif tile == "F":
               Finish(self, col, row)
+
   #reloads everything to reset
   def reset_game(self): 
-    self.cu = 0
-    self.game_timer.current_time = 0
+    self.current_time = 0 
+    self.game_timer.reset()  
     self.load_data()  
-    self.new()  
+    self.new()
   
 # methods are like functions that are part of a class
 # the run method runs the game loop
@@ -216,13 +216,13 @@ class Game:
     if self.player.finished:
        if self.current_time < self.highscore:
             with open(path.join(self.game_folder, HS_FILE), 'w') as f:
-              f.write(str(self.current_time))  
+              f.write(str(self.current_time))
 
-    # kills all sprites if countdown hits 0
-    if self.track_open:
-      if self.game_timer.cd < 1:
-        for s in  self.all_sprites:
-          s.kill()  
+    #kills all sprites if countdown hits 0
+    # if self.track_open:
+    #    if self.game_timer.cd < 1:
+    #      for s in  self.all_sprites:
+    #        s.kill()  
 
 
   # Where we define text
@@ -249,19 +249,18 @@ class Game:
     #self.draw_text(self.screen, str(self.dt*1000), 24, WHITE, WIDTH/30, HEIGHT/30)
 
     # draws countdown
-    if self.track_open:
-     self.draw_text(self.screen, str(self.game_timer.get_countdown()), 24, WHITE, WIDTH/30, HEIGHT/30)
-    
+    # if self.track_open:
+    #  self.draw_text(self.screen, str(self.game_timer.get_countdown()), 24, WHITE, WIDTH/30, HEIGHT/30)
 
     # will say well done if player finishes
-    if self.player:
-      if self.player.finished:
-        self.draw_text(self.screen, "WELL DONE", 24, WHITE, WIDTH/2, HEIGHT/2)
+    # if self.player:
+    #   if self.player.finished:
+    #     self.draw_text(self.screen, "WELL DONE", 24, WHITE, WIDTH/2, HEIGHT/2)
 
     # will say game over if timer hits 0
-    if self.track_open:
-      if self.game_timer.cd < 1:
-        self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
+    # if self.track_open:
+    #   if self.game_timer.cd < 1:
+    #     self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
 
     if self.track_open:
       self.draw_text(self.screen, "Best Time: " + str(self.highscore), 24, WHITE, 905, HEIGHT/12)
