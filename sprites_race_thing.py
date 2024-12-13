@@ -110,9 +110,9 @@ class Player(Sprite):
                     self.vel.y += 40
                 if keys[pg.K_w]:
                     self.vel.y -= 40
-                print("I've gotten a powerup!")
+               
             if str(hits[0].__class__.__name__) == "Finish":
-                print("I finished!!!")
+               
                 self.finished = True
                 self.finish_count += 1
             

@@ -7,6 +7,7 @@ https://github.com/Mosedo/Machine-Learning/blob/main/smart_dots.py - Max Speed
 https://www.youtube.com/watch?v=2iyx8_elcYg - Main Menu
 https://stackoverflow.com/questions/13984066/pygame-restart - Restart
 ChatGPT input: Can you make a level the same size and similar to mine? (inputted Track 3 code) - Track 4
+ChatGPT input: Can you make it so I can reset current time? (inputted timer class) - Reset method in timer class
 '''
 
 #Importing the code needed to create game from other files
@@ -92,14 +93,9 @@ class Game:
                         self.track_selected = 100
                         menu_running = False 
                         HS_FILE = 'highscoretutorial.txt'
+
                         
-            if not menu_running:
-              try:
-                with open(path.join(self.game_folder, HS_FILE), 'r') as f:
-                 self.highscore = int(f.read())
-              except:
-                with open(path.join(self.game_folder, HS_FILE), 'w') as f:
-                  f.write(str(100))        
+                  
 
   #Made the loading code an if loop
   def load_data(self):
@@ -167,6 +163,7 @@ class Game:
 
   #reloads everything to reset
   def reset_game(self): 
+    self.player_finished = False
     self.current_time = 0 
     self.game_timer.reset()  
     self.load_data()  
@@ -195,7 +192,7 @@ class Game:
             if event.key == pg.K_r:
               self.reset_game()
             elif event.key == pg.K_e:
-             self.playing = False  # Exit the current game loop
+             self.playing = False  
              self.main_menu()   
                 
 
@@ -206,17 +203,25 @@ class Game:
     # the timer counts down only if the player isn't finished 
     if self.player and not self.player.finished: 
       self.game_timer.ticking()
-      self.current_time = self.game_timer.get_current_time() 
-
+      self.current_time = self.game_timer.get_current_time()  
 
     # update all the sprites
     if self.track_open:
       self.all_sprites.update()
 
     if self.player.finished:
-       if self.current_time < self.highscore:
+       if self.game_timer.get_countup() < self.highscore:
+            self.highscore = self.game_timer.get_countup()
             with open(path.join(self.game_folder, HS_FILE), 'w') as f:
-              f.write(str(self.current_time))
+              f.write(str(self.game_timer.get_countup()))
+
+    if self.track_open:
+      with open(path.join(self.game_folder, HS_FILE), 'r') as f:
+            self.highscore = int(f.read())
+    # except:
+    #   with open(path.join(self.game_folder, HS_FILE), 'w') as f:
+    #        f.write(str(100)) 
+
 
     #kills all sprites if countdown hits 0
     # if self.track_open:
@@ -253,9 +258,9 @@ class Game:
     #  self.draw_text(self.screen, str(self.game_timer.get_countdown()), 24, WHITE, WIDTH/30, HEIGHT/30)
 
     # will say well done if player finishes
-    # if self.player:
-    #   if self.player.finished:
-    #     self.draw_text(self.screen, "WELL DONE", 24, WHITE, WIDTH/2, HEIGHT/2)
+    if self.player:
+      if self.player.finished:
+        self.draw_text(self.screen, "WELL DONE", 24, WHITE, WIDTH/2, HEIGHT/2)
 
     # will say game over if timer hits 0
     # if self.track_open:
@@ -276,7 +281,7 @@ class Game:
         self.draw_text(self.screen, "before the coundown reaches 0", 24, WHITE, 200, 200)
         self.draw_text(self.screen, " and press R to reset", 24, WHITE, 200, 230)
         #self.draw_text(self.screen, "Press E to go back to Main Menu", 24, WHITE, 860, 720)
-        self.draw_text(self.screen, "<---Countdown", 24, WHITE, 120, 25)
+        #self.draw_text(self.screen, "<---Countdown", 24, WHITE, 120, 25)
                
     pg.display.flip()
 
