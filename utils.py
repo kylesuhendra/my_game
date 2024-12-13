@@ -30,7 +30,7 @@ class Timer():
         return floor(self.cu)
     
     def countup(self):
-            self.cu = self.cu + self.game.dt
+        self.cu = self.cu + self.game.dt
 
     # def event_reset(self):
     #     self.event_time = floor((self.game.clock.)/1000)

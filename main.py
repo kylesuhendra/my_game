@@ -53,14 +53,26 @@ class Game:
         #creates menu first
         menu_running = True
         while menu_running:
+            
+            self.game_folder = path.dirname(__file__)
+            
+            with open(path.join(self.game_folder, 'highscore1.txt'), 'r') as f:
+              self.track1score = int(f.read())
+            with open(path.join(self.game_folder, 'highscore2.txt'), 'r') as f:
+              self.track2score = int(f.read())
+            with open(path.join(self.game_folder, 'highscore3.txt'), 'r') as f:
+              self.track3score = int(f.read())
+            with open(path.join(self.game_folder, 'highscore4.txt'), 'r') as f:
+              self.track4score = int(f.read())           
+
             self.screen.fill(BLACK)
             #Text on screen
             self.draw_text(self.screen, "Select Track", 32, WHITE, WIDTH / 2, HEIGHT / 4)
             self.draw_text(self.screen, "Press 0 for TUTORIAL", 24, WHITE, WIDTH / 2, HEIGHT / 2 - 40)
-            self.draw_text(self.screen, "Press 1 for Track 1", 24, WHITE, WIDTH / 2, HEIGHT / 2)
-            self.draw_text(self.screen, "Press 2 for Track 2", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
-            self.draw_text(self.screen, "Press 3 for Track 3", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
-            self.draw_text(self.screen, "Press 4 for Track 4", 24, WHITE, WIDTH / 2, HEIGHT / 2 + 120)
+            self.draw_text(self.screen, "Press 1 for Track 1   Best Time:" + str(self.track1score), 24, WHITE, WIDTH / 2, HEIGHT / 2)
+            self.draw_text(self.screen, "Press 2 for Track 2   Best Time:" + str(self.track2score), 24, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
+            self.draw_text(self.screen, "Press 3 for Track 3   Best Time:" + str(self.track3score), 24, WHITE, WIDTH / 2, HEIGHT / 2 + 80)
+            self.draw_text(self.screen, "Press 4 for Track 4   Best Time:" + str(self.track4score), 24, WHITE, WIDTH / 2, HEIGHT / 2 + 120)
             pg.display.flip()
 
             self.game_folder = path.dirname(__file__)
@@ -218,6 +230,11 @@ class Game:
     if self.track_open:
       with open(path.join(self.game_folder, HS_FILE), 'r') as f:
             self.highscore = int(f.read())
+
+    if self.track_open:
+       self.current_time
+    
+       
     # except:
     #   with open(path.join(self.game_folder, HS_FILE), 'w') as f:
     #        f.write(str(100)) 
