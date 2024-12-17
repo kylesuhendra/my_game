@@ -4,9 +4,9 @@ W...............WW....WW................WW....WW...............W
 W.....P...........WWWW....................WWWW.................W
 W..............................................................W
 WWWWWWWWWWWW..................WWWW......................W......W
-WFWFWFWWWWWWWW..............WW....WW...................WW.....WW
-WFFFWFWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.....WW
-WFWFWFWW...........WWWWWFFFFFFW.......WW...............WW.....WW
+WCWCWCWWWWWWWW..............WW....WW...................WW.....WW
+WCCCWCWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW.....WW
+WCWCWCWW...........WWWWWFFFFFFW.......WW...............WW.....WW
 WWWWWWW..............WWW......W......WW.................W......W
 WWWWWW................WW......W.....WW.........................W
 WWWWWW.................W......W.....W..........................W

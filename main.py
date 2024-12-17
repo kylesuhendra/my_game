@@ -55,7 +55,7 @@ class Game:
         while menu_running:
             
             self.game_folder = path.dirname(__file__)
-            
+            #Loads in the high scores from every level
             with open(path.join(self.game_folder, 'highscore1.txt'), 'r') as f:
               self.track1score = int(f.read())
             with open(path.join(self.game_folder, 'highscore2.txt'), 'r') as f:
@@ -66,7 +66,7 @@ class Game:
               self.track4score = int(f.read())           
 
             self.screen.fill(BLACK)
-            #Text on screen
+            #Text on screen with high scores
             self.draw_text(self.screen, "Select Track", 32, WHITE, WIDTH / 2, HEIGHT / 4)
             self.draw_text(self.screen, "Press 0 for TUTORIAL", 24, WHITE, WIDTH / 2, HEIGHT / 2 - 40)
             self.draw_text(self.screen, "Press 1 for Track 1   Best Time:" + str(self.track1score), 24, WHITE, WIDTH / 2, HEIGHT / 2)
@@ -221,19 +221,17 @@ class Game:
     if self.track_open:
       self.all_sprites.update()
 
+    #Checks to see if there is a high score when player finishes
     if self.player.finished:
        if self.game_timer.get_countup() < self.highscore:
             self.highscore = self.game_timer.get_countup()
             with open(path.join(self.game_folder, HS_FILE), 'w') as f:
               f.write(str(self.game_timer.get_countup()))
 
+    #Updates the highscore
     if self.track_open:
       with open(path.join(self.game_folder, HS_FILE), 'r') as f:
             self.highscore = int(f.read())
-
-    if self.track_open:
-       self.current_time
-    
        
     # except:
     #   with open(path.join(self.game_folder, HS_FILE), 'w') as f:
@@ -284,6 +282,7 @@ class Game:
     #   if self.game_timer.cd < 1:
     #     self.draw_text(self.screen, "GAME OVER", 24, WHITE, WIDTH/2, HEIGHT/2)
 
+    #Text for current and best time
     if self.track_open:
       self.draw_text(self.screen, "Best Time: " + str(self.highscore), 24, WHITE, 905, HEIGHT/12)
       self.draw_text(self.screen, "Current Time: " + str(self.game_timer.get_countup()), 24, WHITE, 895, HEIGHT/24)

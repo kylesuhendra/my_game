@@ -74,6 +74,7 @@ class Player(Sprite):
             self.vel.x += self.speed
             self.image = self.image_right
             
+    #Tells the player what to do if it collides with a wall
     def collide_with_walls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
@@ -110,16 +111,11 @@ class Player(Sprite):
                     self.vel.y += 40
                 if keys[pg.K_w]:
                     self.vel.y -= 40
-               
             if str(hits[0].__class__.__name__) == "Finish":
-               
                 self.finished = True
                 self.finish_count += 1
             
-                
-    
     def update(self):
-        #self.acc = vec(0, GRAVITY)
         self.acc = vec (0,0)
         self.get_keys()
         
@@ -160,12 +156,16 @@ class Mob(Sprite):
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((32, 32))
-        self.image.fill(GREEN)
+        self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
+        self.load_images()
+        self.image = self.standing_image
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
         self.speed = 25
+
+         # Up image
+       
 
     def update(self):
         self.rect.x += self.speed
@@ -179,6 +179,7 @@ class Mob(Sprite):
         if self.rect.colliderect(self.game.player):
             self.speed *= -1
 
+#Wall sprite
 class Wall(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.all_walls
@@ -190,17 +191,22 @@ class Wall(Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+#Powerup sprite
 class Powerup(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.all_powerups
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(PINK)
+        self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
+        self.load_images()
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+    def load_images(self):
+        self.image = self.spritesheet.get_image(80, 0, 16, 16, 1)
+
+#Coin sprite
 class Coin(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.all_coins
@@ -211,14 +217,17 @@ class Coin(Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
-
+#Finish sprite
 class Finish(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.all_finishes
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(NEON)
+        self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
+        self.load_images()
         self.rect = self.image.get_rect()
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+    def load_images(self):
+        self.image = self.spritesheet.get_image(64, 0, 16, 16, 1)
